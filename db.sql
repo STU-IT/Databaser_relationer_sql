@@ -1,24 +1,26 @@
--- phpMyAdmin SQL Dump
--- version 4.0.10.7
--- http://www.phpmyadmin.net
---
--- Host: localhost
--- Generation Time: Mar 20, 2015 at 01:43 AM
--- Server version: 5.5.34-cll-lve
--- PHP Version: 5.4.23
 
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET time_zone = "+00:00";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+-- --------------------------------------------------------
 
 --
--- Database: `wrpracti_bookinfo`
+-- Table structure for table `regions`
 --
+
+CREATE TABLE IF NOT EXISTS `regions` (
+  `REGION_ID` decimal(5,0) NOT NULL,
+  `REGION_NAME` varchar(25) DEFAULT NULL,
+  PRIMARY KEY (`REGION_ID`),
+  UNIQUE (`REGION_NAME`)
+);
+--
+-- Dumping data for table `regions`
+--
+
+INSERT INTO `regions` (`REGION_ID`, `REGION_NAME`) VALUES
+('1', 'Europe\r'),
+('2', 'Americas\r'),
+('3', 'Asia\r'),
+('4', 'Middle East and Africa\r');
+
 
 -- --------------------------------------------------------
 
@@ -31,8 +33,8 @@ CREATE TABLE IF NOT EXISTS `countries` (
   `COUNTRY_NAME` varchar(40) DEFAULT NULL,
   `REGION_ID` decimal(10,0) DEFAULT NULL,
   PRIMARY KEY (`COUNTRY_ID`),
-  KEY `COUNTR_REG_FK` (`REGION_ID`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+  FOREIGN KEY (`REGION_ID`) REFERENCES `region` (`REGION_ID`)
+); 
 
 --
 -- Dumping data for table `countries`
@@ -68,51 +70,53 @@ INSERT INTO `countries` (`COUNTRY_ID`, `COUNTRY_NAME`, `REGION_ID`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `departments`
+-- Table structure for table `locations`
 --
 
-CREATE TABLE IF NOT EXISTS `departments` (
-  `DEPARTMENT_ID` decimal(4,0) NOT NULL DEFAULT '0',
-  `DEPARTMENT_NAME` varchar(30) NOT NULL,
-  `MANAGER_ID` decimal(6,0) DEFAULT NULL,
-  `LOCATION_ID` decimal(4,0) DEFAULT NULL,
-  PRIMARY KEY (`DEPARTMENT_ID`),
-  KEY `DEPT_MGR_FK` (`MANAGER_ID`),
-  KEY `DEPT_LOCATION_IX` (`LOCATION_ID`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+CREATE TABLE IF NOT EXISTS `locations` (
+  `LOCATION_ID` decimal(4,0) NOT NULL DEFAULT '0',
+  `STREET_ADDRESS` varchar(40) DEFAULT NULL,
+  `POSTAL_CODE` varchar(12) DEFAULT NULL,
+  `CITY` varchar(30) NOT NULL,
+  `STATE_PROVINCE` varchar(25) DEFAULT NULL,
+  `COUNTRY_ID` varchar(2) DEFAULT NULL,
+  PRIMARY KEY (`LOCATION_ID`),
+  UNIQUE (`CITY`),
+  FOREIGN KEY (`COUNTRY_ID`) REFERENCES `countries` (`COUNTRY_ID`)
+);
+
+CREATE INDEX IF NOT EXISTS `LOC_CITY_IX` ON `locations`(`CITY`);
+CREATE INDEX IF NOT EXISTS `LOC_COUNTRY_IX` ON `locations`(`COUNTRY_ID`);
+CREATE INDEX IF NOT EXISTS `LOC_STATE_PROVINCE_IX` ON `locations`(`STATE_PROVINCE`);
 
 --
--- Dumping data for table `departments`
+-- Dumping data for table `locations`
 --
 
-INSERT INTO `departments` (`DEPARTMENT_ID`, `DEPARTMENT_NAME`, `MANAGER_ID`, `LOCATION_ID`) VALUES
-('10', 'Administration', '200', '1700'),
-('20', 'Marketing', '201', '1800'),
-('30', 'Purchasing', '114', '1700'),
-('40', 'Human Resources', '203', '2400'),
-('50', 'Shipping', '121', '1500'),
-('60', 'IT', '103', '1400'),
-('70', 'Public Relations', '204', '2700'),
-('80', 'Sales', '145', '2500'),
-('90', 'Executive', '100', '1700'),
-('100', 'Finance', '108', '1700'),
-('110', 'Accounting', '205', '1700'),
-('120', 'Treasury', '0', '1700'),
-('130', 'Corporate Tax', '0', '1700'),
-('140', 'Control And Credit', '0', '1700'),
-('150', 'Shareholder Services', '0', '1700'),
-('160', 'Benefits', '0', '1700'),
-('170', 'Manufacturing', '0', '1700'),
-('180', 'Construction', '0', '1700'),
-('190', 'Contracting', '0', '1700'),
-('200', 'Operations', '0', '1700'),
-('210', 'IT Support', '0', '1700'),
-('220', 'NOC', '0', '1700'),
-('230', 'IT Helpdesk', '0', '1700'),
-('240', 'Government Sales', '0', '1700'),
-('250', 'Retail Sales', '0', '1700'),
-('260', 'Recruiting', '0', '1700'),
-('270', 'Payroll', '0', '1700');
+INSERT INTO `locations` (`LOCATION_ID`, `STREET_ADDRESS`, `POSTAL_CODE`, `CITY`, `STATE_PROVINCE`, `COUNTRY_ID`) VALUES
+('1000', '1297 Via Cola di Rie', '989', 'Roma', '', 'IT'),
+('1100', '93091 Calle della Testa', '10934', 'Venice', '', 'IT'),
+('1200', '2017 Shinjuku-ku', '1689', 'Tokyo', 'Tokyo Prefecture', 'JP'),
+('1300', '9450 Kamiya-cho', '6823', 'Hiroshima', '', 'JP'),
+('1400', '2014 Jabberwocky Rd', '26192', 'Southlake', 'Texas', 'US'),
+('1500', '2011 Interiors Blvd', '99236', 'South San Francisco', 'California', 'US'),
+('1600', '2007 Zagora St', '50090', 'South Brunswick', 'New Jersey', 'US'),
+('1700', '2004 Charade Rd', '98199', 'Seattle', 'Washington', 'US'),
+('1800', '147 Spadina Ave', 'M5V 2L7', 'Toronto', 'Ontario', 'CA'),
+('1900', '6092 Boxwood St', 'YSW 9T2', 'Whitehorse', 'Yukon', 'CA'),
+('2000', '40-5-12 Laogianggen', '190518', 'Beijing', '', 'CN'),
+('2100', '1298 Vileparle (E)', '490231', 'Bombay', 'Maharashtra', 'IN'),
+('2200', '12-98 Victoria Street', '2901', 'Sydney', 'New South Wales', 'AU'),
+('2300', '198 Clementi North', '540198', 'Singapore', '', 'SG'),
+('2400', '8204 Arthur St', '', 'London', '', 'UK'),
+('2500', '"Magdalen Centre', ' The Oxford ', 'OX9 9ZB', 'Oxford', 'Ox'),
+('2600', '9702 Chester Road', '9629850293', 'Stretford', 'Manchester', 'UK'),
+('2700', 'Schwanthalerstr. 7031', '80925', 'Munich', 'Bavaria', 'DE'),
+('2800', 'Rua Frei Caneca 1360', '01307-002', 'Sao Paulo', 'Sao Paulo', 'BR'),
+('2900', '20 Rue des Corps-Saints', '1730', 'Geneva', 'Geneve', 'CH'),
+('3000', 'Murtenstrasse 921', '3095', 'Bern', 'BE', 'CH'),
+('3100', 'Pieter Breughelstraat 837', '3029SK', 'Utrecht', 'Utrecht', 'NL'),
+('3200', 'Mariano Escobedo 9991', '11932', 'Mexico City', '"Distrito Federal', '"');
 
 -- --------------------------------------------------------
 
@@ -133,12 +137,16 @@ CREATE TABLE IF NOT EXISTS `employees` (
   `MANAGER_ID` decimal(6,0) DEFAULT NULL,
   `DEPARTMENT_ID` decimal(4,0) DEFAULT NULL,
   PRIMARY KEY (`EMPLOYEE_ID`),
-  UNIQUE KEY `EMP_EMAIL_UK` (`EMAIL`),
-  KEY `EMP_DEPARTMENT_IX` (`DEPARTMENT_ID`),
-  KEY `EMP_JOB_IX` (`JOB_ID`),
-  KEY `EMP_MANAGER_IX` (`MANAGER_ID`),
-  KEY `EMP_NAME_IX` (`LAST_NAME`,`FIRST_NAME`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+  UNIQUE (`EMAIL`),
+  FOREIGN KEY (`DEPARTMENT_ID`) REFERENCES `departments` (`DEPARTMENT_ID`),
+  FOREIGN KEY (`JOB_ID`) REFERENCES `jobs` (`JOB_ID`),
+  FOREIGN KEY (`MANAGER_ID`) REFERENCES `employees` (`EMPLOYEE_ID`)
+);
+
+CREATE INDEX IF NOT EXISTS `EMP_DEPARTMENT_IX` ON `employees`(`DEPARTMENT_ID`);
+CREATE INDEX IF NOT EXISTS `EMP_JOB_IX` ON `employees`(`JOB_ID`);
+CREATE INDEX IF NOT EXISTS `EMP_MANAGER_IX` ON `employees`(`MANAGER_ID`);
+CREATE INDEX IF NOT EXISTS `EMP_NAME_IX` ON `employees`(`LAST_NAME`,`FIRST_NAME`);
 
 --
 -- Dumping data for table `employees`
@@ -252,41 +260,55 @@ INSERT INTO `employees` (`EMPLOYEE_ID`, `FIRST_NAME`, `LAST_NAME`, `EMAIL`, `PHO
 ('204', 'Hermann', 'Baer', 'HBAER', '515.123.8888', '1987-09-29', 'PR_REP', '10000.00', '0.00', '101', '70'),
 ('205', 'Shelley', 'Higgins', 'SHIGGINS', '515.123.8080', '1987-09-30', 'AC_MGR', '12000.00', '0.00', '101', '110'),
 ('206', 'William', 'Gietz', 'WGIETZ', '515.123.8181', '1987-10-01', 'AC_ACCOUNT', '8300.00', '0.00', '205', '110');
-
 -- --------------------------------------------------------
 
 --
--- Table structure for table `job_history`
+-- Table structure for table `departments`
 --
 
-CREATE TABLE IF NOT EXISTS `job_history` (
-  `EMPLOYEE_ID` decimal(6,0) NOT NULL,
-  `START_DATE` date NOT NULL,
-  `END_DATE` date NOT NULL,
-  `JOB_ID` varchar(10) NOT NULL,
-  `DEPARTMENT_ID` decimal(4,0) DEFAULT NULL,
-  PRIMARY KEY (`EMPLOYEE_ID`,`START_DATE`),
-  KEY `JHIST_DEPARTMENT_IX` (`DEPARTMENT_ID`),
-  KEY `JHIST_EMPLOYEE_IX` (`EMPLOYEE_ID`),
-  KEY `JHIST_JOB_IX` (`JOB_ID`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+CREATE TABLE IF NOT EXISTS `departments` (
+  `DEPARTMENT_ID` decimal(4,0) NOT NULL DEFAULT '0',
+  `DEPARTMENT_NAME` varchar(30) NOT NULL,
+  `MANAGER_ID` decimal(6,0) DEFAULT NULL,
+  `LOCATION_ID` decimal(4,0) DEFAULT NULL,
+  PRIMARY KEY (`DEPARTMENT_ID`),
+  FOREIGN KEY (`MANAGER_ID`) REFERENCES `employees` (`EMPLOYEE_ID`),
+  FOREIGN KEY (`LOCATION_ID`) REFERENCES `locations` (`LOCATION_ID`)
+);
 
 --
--- Dumping data for table `job_history`
+-- Dumping data for table `departments`
 --
 
-INSERT INTO `job_history` (`EMPLOYEE_ID`, `START_DATE`, `END_DATE`, `JOB_ID`, `DEPARTMENT_ID`) VALUES
-('102', '1993-01-13', '1998-07-24', 'IT_PROG', '60'),
-('101', '1989-09-21', '1993-10-27', 'AC_ACCOUNT', '110'),
-('101', '1993-10-28', '1997-03-15', 'AC_MGR', '110'),
-('201', '1996-02-17', '1999-12-19', 'MK_REP', '20'),
-('114', '1998-03-24', '1999-12-31', 'ST_CLERK', '50'),
-('122', '1999-01-01', '1999-12-31', 'ST_CLERK', '50'),
-('200', '1987-09-17', '1993-06-17', 'AD_ASST', '90'),
-('176', '1998-03-24', '1998-12-31', 'SA_REP', '80'),
-('176', '1999-01-01', '1999-12-31', 'SA_MAN', '80'),
-('200', '1994-07-01', '1998-12-31', 'AC_ACCOUNT', '90'),
-('0', '0000-00-00', '0000-00-00', '', '0');
+INSERT INTO `departments` (`DEPARTMENT_ID`, `DEPARTMENT_NAME`, `MANAGER_ID`, `LOCATION_ID`) VALUES
+('10', 'Administration', '200', '1700'),
+('20', 'Marketing', '201', '1800'),
+('30', 'Purchasing', '114', '1700'),
+('40', 'Human Resources', '203', '2400'),
+('50', 'Shipping', '121', '1500'),
+('60', 'IT', '103', '1400'),
+('70', 'Public Relations', '204', '2700'),
+('80', 'Sales', '145', '2500'),
+('90', 'Executive', '100', '1700'),
+('100', 'Finance', '108', '1700'),
+('110', 'Accounting', '205', '1700'),
+('120', 'Treasury', '0', '1700'),
+('130', 'Corporate Tax', '0', '1700'),
+('140', 'Control And Credit', '0', '1700'),
+('150', 'Shareholder Services', '0', '1700'),
+('160', 'Benefits', '0', '1700'),
+('170', 'Manufacturing', '0', '1700'),
+('180', 'Construction', '0', '1700'),
+('190', 'Contracting', '0', '1700'),
+('200', 'Operations', '0', '1700'),
+('210', 'IT Support', '0', '1700'),
+('220', 'NOC', '0', '1700'),
+('230', 'IT Helpdesk', '0', '1700'),
+('240', 'Government Sales', '0', '1700'),
+('250', 'Retail Sales', '0', '1700'),
+('260', 'Recruiting', '0', '1700'),
+('270', 'Payroll', '0', '1700');
+
 
 -- --------------------------------------------------------
 
@@ -300,7 +322,11 @@ CREATE TABLE IF NOT EXISTS `jobs` (
   `MIN_SALARY` decimal(6,0) DEFAULT NULL,
   `MAX_SALARY` decimal(6,0) DEFAULT NULL,
   PRIMARY KEY (`JOB_ID`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+);
+
+
+
+ 
 
 --
 -- Dumping data for table `jobs`
@@ -330,74 +356,39 @@ INSERT INTO `jobs` (`JOB_ID`, `JOB_TITLE`, `MIN_SALARY`, `MAX_SALARY`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `locations`
+-- Table structure for table `job_history`
 --
 
-CREATE TABLE IF NOT EXISTS `locations` (
-  `LOCATION_ID` decimal(4,0) NOT NULL DEFAULT '0',
-  `STREET_ADDRESS` varchar(40) DEFAULT NULL,
-  `POSTAL_CODE` varchar(12) DEFAULT NULL,
-  `CITY` varchar(30) NOT NULL,
-  `STATE_PROVINCE` varchar(25) DEFAULT NULL,
-  `COUNTRY_ID` varchar(2) DEFAULT NULL,
-  PRIMARY KEY (`LOCATION_ID`),
-  KEY `LOC_CITY_IX` (`CITY`),
-  KEY `LOC_COUNTRY_IX` (`COUNTRY_ID`),
-  KEY `LOC_STATE_PROVINCE_IX` (`STATE_PROVINCE`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+CREATE TABLE IF NOT EXISTS `job_history` (
+  `EMPLOYEE_ID` decimal(6,0) NOT NULL,
+  `START_DATE` date NOT NULL,
+  `END_DATE` date NOT NULL,
+  `JOB_ID` varchar(10) NOT NULL,
+  `DEPARTMENT_ID` decimal(4,0) DEFAULT NULL,
+  PRIMARY KEY (`EMPLOYEE_ID`,`START_DATE`),
+  FOREIGN KEY (`DEPARTMENT_ID`) REFERENCES `departments`(`DEPARTMENT_ID`),
+  FOREIGN KEY (`EMPLOYEE_ID`) REFERENCES `employees`(`EMPLOYEE_ID`),
+  FOREIGN KEY (`JOB_ID`) REFERENCES `jobs`(`JOB_ID`) 
+);
+
+CREATE INDEX IF NOT EXISTS `JHIST_DEPARTMENT_IX` ON `departments`(`DEPARTMENT_ID`);
+CREATE INDEX IF NOT EXISTS `JHIST_EMPLOYEE_IX` ON `employees`(`EMPLOYEE_ID`);
+CREATE INDEX IF NOT EXISTS `JHIST_JOB_IX` ON `jobs`(`JOB_ID`);
 
 --
--- Dumping data for table `locations`
+-- Dumping data for table `job_history`
 --
 
-INSERT INTO `locations` (`LOCATION_ID`, `STREET_ADDRESS`, `POSTAL_CODE`, `CITY`, `STATE_PROVINCE`, `COUNTRY_ID`) VALUES
-('1000', '1297 Via Cola di Rie', '989', 'Roma', '', 'IT'),
-('1100', '93091 Calle della Testa', '10934', 'Venice', '', 'IT'),
-('1200', '2017 Shinjuku-ku', '1689', 'Tokyo', 'Tokyo Prefecture', 'JP'),
-('1300', '9450 Kamiya-cho', '6823', 'Hiroshima', '', 'JP'),
-('1400', '2014 Jabberwocky Rd', '26192', 'Southlake', 'Texas', 'US'),
-('1500', '2011 Interiors Blvd', '99236', 'South San Francisco', 'California', 'US'),
-('1600', '2007 Zagora St', '50090', 'South Brunswick', 'New Jersey', 'US'),
-('1700', '2004 Charade Rd', '98199', 'Seattle', 'Washington', 'US'),
-('1800', '147 Spadina Ave', 'M5V 2L7', 'Toronto', 'Ontario', 'CA'),
-('1900', '6092 Boxwood St', 'YSW 9T2', 'Whitehorse', 'Yukon', 'CA'),
-('2000', '40-5-12 Laogianggen', '190518', 'Beijing', '', 'CN'),
-('2100', '1298 Vileparle (E)', '490231', 'Bombay', 'Maharashtra', 'IN'),
-('2200', '12-98 Victoria Street', '2901', 'Sydney', 'New South Wales', 'AU'),
-('2300', '198 Clementi North', '540198', 'Singapore', '', 'SG'),
-('2400', '8204 Arthur St', '', 'London', '', 'UK'),
-('2500', '"Magdalen Centre', ' The Oxford ', 'OX9 9ZB', 'Oxford', 'Ox'),
-('2600', '9702 Chester Road', '9629850293', 'Stretford', 'Manchester', 'UK'),
-('2700', 'Schwanthalerstr. 7031', '80925', 'Munich', 'Bavaria', 'DE'),
-('2800', 'Rua Frei Caneca 1360', '01307-002', 'Sao Paulo', 'Sao Paulo', 'BR'),
-('2900', '20 Rue des Corps-Saints', '1730', 'Geneva', 'Geneve', 'CH'),
-('3000', 'Murtenstrasse 921', '3095', 'Bern', 'BE', 'CH'),
-('3100', 'Pieter Breughelstraat 837', '3029SK', 'Utrecht', 'Utrecht', 'NL'),
-('3200', 'Mariano Escobedo 9991', '11932', 'Mexico City', '"Distrito Federal', '"');
+INSERT INTO `job_history` (`EMPLOYEE_ID`, `START_DATE`, `END_DATE`, `JOB_ID`, `DEPARTMENT_ID`) VALUES
+('102', '1993-01-13', '1998-07-24', 'IT_PROG', '60'),
+('101', '1989-09-21', '1993-10-27', 'AC_ACCOUNT', '110'),
+('101', '1993-10-28', '1997-03-15', 'AC_MGR', '110'),
+('201', '1996-02-17', '1999-12-19', 'MK_REP', '20'),
+('114', '1998-03-24', '1999-12-31', 'ST_CLERK', '50'),
+('122', '1999-01-01', '1999-12-31', 'ST_CLERK', '50'),
+('200', '1987-09-17', '1993-06-17', 'AD_ASST', '90'),
+('176', '1998-03-24', '1998-12-31', 'SA_REP', '80'),
+('176', '1999-01-01', '1999-12-31', 'SA_MAN', '80'),
+('200', '1994-07-01', '1998-12-31', 'AC_ACCOUNT', '90'),
+('0', '0000-00-00', '0000-00-00', '', '0');
 
--- --------------------------------------------------------
-
---
--- Table structure for table `regions`
---
-
-CREATE TABLE IF NOT EXISTS `regions` (
-  `REGION_ID` decimal(5,0) NOT NULL,
-  `REGION_NAME` varchar(25) DEFAULT NULL,
-  PRIMARY KEY (`REGION_ID`),
-  UNIQUE KEY `sss` (`REGION_NAME`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `regions`
---
-
-INSERT INTO `regions` (`REGION_ID`, `REGION_NAME`) VALUES
-('1', 'Europe\r'),
-('2', 'Americas\r'),
-('3', 'Asia\r'),
-('4', 'Middle East and Africa\r');
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
